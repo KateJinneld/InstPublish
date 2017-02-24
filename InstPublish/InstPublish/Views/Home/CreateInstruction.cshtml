@@ -1,0 +1,133 @@
+﻿@model InstPublish.Models.Instruction
+
+
+@{
+    ViewBag.Title = "CreateInstruction";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+    .myTag{
+        background-color: aquamarine;
+    }
+    #groupDescription{
+        margin-bottom:15px;
+    }
+    .sortable {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow: hidden;
+        min-height: 260px;
+    }
+        .sortable li {
+            margin: 10px 3px 10px 3px;
+            padding: 1px;
+            float: left;
+            width: 220px;
+            height: 250px;
+            text-align: center;
+        }
+
+
+    </style>
+
+<h2>Редактор инструкций</h2>
+
+<div class="instruction-Contaner">
+    @using (Html.BeginForm("Create", "Home", FormMethod.Post))
+    {
+        <div class="form-group" id="groupDescription">
+            @Html.LabelFor(m => m.Title, "Введите заголовок:", new { @class = "col-md-2 control-label" })
+            <div class="col-md-3" id="groupDescription">
+                @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+            </div>
+      
+            @Html.LabelFor(m => m.Category, "Выберите категорию: ", new { @class = "col-md-2 control-label" })
+            <div class="col-md-5" id="groupDescription">
+                <select class="form-control" id="Category" name="Category">
+                    <option>Не выбрано</option>
+                    <option>Электроника</option>
+                    <option>Дети</option>
+                    <option>Алкоголь</option>
+                    <option>Наркотики</option>
+                    <option>Ремонт</option>
+                    <option>Химия</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.LinkToYouTubeVideo, "Ссылка на YouTube:", new { @class = "col-md-2 control-label" })
+            <div class="col-md-3" id="groupDescription">
+                @*@Html.TextAreaFor(m => m.Description, new { rows = "1" })*@
+                @Html.TextBoxFor(m => m.LinkToYouTubeVideo, new { @class = "form-control" })
+            </div>
+            </div>
+           
+            <div class="form-group">
+                @Html.LabelFor(m => m.Tags, "Введите теги:", new { @class = "col-md-2 control-label"})
+                <div class="col-md-5" id="groupDescription">
+                    @*@for (int i = 0; i < Model.Tags.Count; i++)
+                    {
+                        <span class="myTag" id="Tags_@i">
+                            <span>@Model.Tags[i].Text"&nbsp;&nbsp;</span>
+                    <a href="#" class="myTagRemover" id="Tags_Remover_@i " tagidtoremove="@i" title="Remove">x</a>
+</span>
+                    }*@
+                    @Html.TextBoxFor(m => m.Tags, new { @class = "form-control" })
+                   
+                </div>
+            </div>
+    }
+                <div style="width: 100%;">
+                    <ul class="sortable">
+                        @foreach (var item in Model.Steps)
+                {
+                            <li class="ui-state-default image-link"> <img src="@item.Image" style="width: 220px; height: 220px" /><span class="index"></span>.  @item.Title</li>
+                        }
+                        <li class="ui-state-default some" draggable="false"><img src="http://img.freepik.com/free-icon/plus-positive-add-mathematical-symbol_318-59636.jpg?size=338&ext=jpg" style="width: 220px; height: 220px" onclick="createStep()" /> </li>
+                    </ul>
+
+                </div>
+            </div>
+
+
+
+
+@section scripts{
+    <script>
+        document.getElementById("Tags").value = ""
+
+        var availableTags = ["games", "test"] 
+        jQuery("#Tags").tagsManager({
+            blinkBGColor_1: '#FFFF9C',
+        blinkBGColor_2: '#CDE69C',
+        });
+    function createStep() {
+        $('.sortable').append($('<li class="ui-state-default image-link"><img src="http://www.amfmph.com/wp-content/plugins/social-media-builder//img/no-image.png" style="width: 220px; height: 220px" /><span class="index"></span>.  Кликните, чтобы редактировать</li>'));
+        $(".image-link").each(function (index, item) {
+            $(item).find(".index").html(index);
+        });
+    };
+    $(function () {
+        $(".image-link").each(function (index, item) {
+            $(item).find(".index").html(index + 1);
+        });
+
+        $("#tags").autocomplete({ source: availableTags });
+        $('.sortable').sortable({
+            connectWith: "#sortable",
+            stop: function(event,ui){
+                $(".image-link").each(function (index, item) {
+                    $(item).find(".index").html(index+1);
+                });
+            },
+            cancel: ".some"
+        });
+       
+        $(".sortable").disableSelection();      
+    });
+   
+</script>
+    }

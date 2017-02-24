@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="InstPublishModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="InstPublishModelStoreContainer">
+    <EntitySet Name="InstructionSet" EntityType="InstPublishModel.Store.InstructionSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="CommentSet" EntityType="InstPublishModel.Store.CommentSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TagSet" EntityType="InstPublishModel.Store.TagSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="StepsSet" EntityType="InstPublishModel.Store.StepsSet" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="InstructionTags" Association="InstPublishModel.Store.InstructionTags">
+      <End Role="Instruction" EntitySet="InstructionSet" />
+      <End Role="Tag" EntitySet="TagSet" />
+    </AssociationSet>
+    <AssociationSet Name="InstructionSteps" Association="InstPublishModel.Store.InstructionSteps">
+      <End Role="Instruction" EntitySet="InstructionSet" />
+      <End Role="Steps" EntitySet="StepsSet" />
+    </AssociationSet>
+    <AssociationSet Name="InstructionComment" Association="InstPublishModel.Store.InstructionComment">
+      <End Role="Instruction" EntitySet="InstructionSet" />
+      <End Role="Comment" EntitySet="CommentSet" />
+    </AssociationSet>
+    <AssociationSet Name="TagInstruction" Association="InstPublishModel.Store.TagInstruction">
+      <End Role="Tag" EntitySet="TagSet" />
+      <End Role="Instruction" EntitySet="InstructionSet" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="InstructionSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Category" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="UserID" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Date" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="YouTubeLink" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Likes" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Dislikes" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TagId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CommentSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserId" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Text" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Date" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="InstructionId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TagSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Text" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="InstructionId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="StepsSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Image" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Number" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="InstructionId" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="InstructionTags">
+    <End Role="Instruction" Type="InstPublishModel.Store.InstructionSet" Multiplicity="1" />
+    <End Role="Tag" Type="InstPublishModel.Store.TagSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Instruction">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Tag">
+        <PropertyRef Name="InstructionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="InstructionSteps">
+    <End Role="Instruction" Type="InstPublishModel.Store.InstructionSet" Multiplicity="1" />
+    <End Role="Steps" Type="InstPublishModel.Store.StepsSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Instruction">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Steps">
+        <PropertyRef Name="InstructionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="InstructionComment">
+    <End Role="Instruction" Type="InstPublishModel.Store.InstructionSet" Multiplicity="1" />
+    <End Role="Comment" Type="InstPublishModel.Store.CommentSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Instruction">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Comment">
+        <PropertyRef Name="InstructionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TagInstruction">
+    <End Role="Tag" Type="InstPublishModel.Store.TagSet" Multiplicity="1" />
+    <End Role="Instruction" Type="InstPublishModel.Store.InstructionSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tag">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Instruction">
+        <PropertyRef Name="TagId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

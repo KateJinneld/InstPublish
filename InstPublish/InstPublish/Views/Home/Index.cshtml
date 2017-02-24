@@ -1,0 +1,59 @@
+﻿@using InstPublish.Models
+@model IEnumerable<Instruction>
+@{
+    ViewBag.Title = "Home Page";
+}
+<style>
+    img{
+        margin-bottom: 15px;
+    }
+ .Steps {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow: hidden;
+        min-height: 260px;
+    }
+        .Steps li {
+            margin: 10px 3px 10px 3px;
+            padding: 1px;
+            float: left;
+            width: 220px;
+            height: 250px;
+            text-align: center;
+        }
+</style>
+<div class="page-header">
+    <h1>InstPublish <small>Инструкции на все случаи жизни</small></h1>
+</div>
+
+@foreach (Instruction item in Model)
+{
+    using (Html.BeginForm("Create", "Home", FormMethod.Post))
+    {
+        <div class="container">
+            <div class="hero-unit">
+                <h2>@item.Title<small> - @item.Author</small></h2>
+            </div>
+            <div class="form-group" id="groupDescription">
+                <div style="width: 100%;">
+                    <ul class="Steps">
+                        @foreach (var step in item.Steps)
+                        {
+                            <li class="ui-state-default image-link"> <img src="@step.Image" style="width: 220px; height: 220px" /> <span class="index">. </span>@step.Title</li>
+                        }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+    }
+}
+
+<script>
+    $(function () {
+        $(".image-link").each(function (index, item) {
+            $(item).find(".index").html(index + 2);
+        });
+    });
+</script>

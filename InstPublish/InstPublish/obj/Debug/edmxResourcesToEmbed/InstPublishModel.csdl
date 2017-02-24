@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="InstPublishModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+  <EntityContainer Name="InstPublishModelContainer" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="InstructionSet" EntityType="InstPublishModel.Instruction" />
+    <EntitySet Name="CommentSet" EntityType="InstPublishModel.Comment" />
+    <EntitySet Name="TagSet" EntityType="InstPublishModel.Tag" />
+    <EntitySet Name="StepsSet" EntityType="InstPublishModel.Steps" />
+    <AssociationSet Name="InstructionTags" Association="InstPublishModel.InstructionTags">
+      <End Role="Instruction" EntitySet="InstructionSet" />
+      <End Role="Tag" EntitySet="TagSet" />
+    </AssociationSet>
+    <AssociationSet Name="InstructionSteps" Association="InstPublishModel.InstructionSteps">
+      <End Role="Instruction" EntitySet="InstructionSet" />
+      <End Role="Steps" EntitySet="StepsSet" />
+    </AssociationSet>
+    <AssociationSet Name="InstructionComment" Association="InstPublishModel.InstructionComment">
+      <End Role="Instruction" EntitySet="InstructionSet" />
+      <End Role="Comment" EntitySet="CommentSet" />
+    </AssociationSet>
+    <AssociationSet Name="TagInstruction" Association="InstPublishModel.TagInstruction">
+      <End Role="Tag" EntitySet="TagSet" />
+      <End Role="Instruction" EntitySet="InstructionSet" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Instruction">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="String" Nullable="false" />
+    <Property Name="Description" Type="String" Nullable="false" />
+    <Property Name="Category" Type="String" Nullable="false" />
+    <Property Name="UserID" Type="String" Nullable="false" />
+    <Property Name="Date" Type="String" Nullable="false" />
+    <Property Name="YouTubeLink" Type="String" Nullable="false" />
+    <Property Name="Likes" Type="String" Nullable="false" />
+    <Property Name="Dislikes" Type="String" Nullable="false" />
+    <NavigationProperty Name="Steps" Relationship="InstPublishModel.InstructionSteps" FromRole="Instruction" ToRole="Steps" />
+    <NavigationProperty Name="Comment" Relationship="InstPublishModel.InstructionComment" FromRole="Instruction" ToRole="Comment" />
+    <NavigationProperty Name="Tag" Relationship="InstPublishModel.TagInstruction" FromRole="Instruction" ToRole="Tag" />
+    <Property Name="TagId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Comment">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="String" Nullable="false" />
+    <Property Name="Text" Type="String" Nullable="false" />
+    <Property Name="Date" Type="String" Nullable="false" />
+    <NavigationProperty Name="Instruction" Relationship="InstPublishModel.InstructionComment" FromRole="Comment" ToRole="Instruction" />
+    <Property Name="InstructionId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Tag">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Text" Type="String" Nullable="false" />
+    <NavigationProperty Name="Instruction" Relationship="InstPublishModel.TagInstruction" FromRole="Tag" ToRole="Instruction" />
+  </EntityType>
+  <EntityType Name="Steps">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="String" Nullable="false" />
+    <Property Name="Description" Type="String" Nullable="false" />
+    <Property Name="Image" Type="String" Nullable="false" />
+    <Property Name="Number" Type="String" Nullable="false" />
+    <NavigationProperty Name="Instruction" Relationship="InstPublishModel.InstructionSteps" FromRole="Steps" ToRole="Instruction" />
+    <Property Name="InstructionId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <Association Name="InstructionTags">
+    <End Type="InstPublishModel.Instruction" Role="Instruction" Multiplicity="1" />
+    <End Type="InstPublishModel.Tag" Role="Tag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Instruction">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Tag">
+        <PropertyRef Name="InstructionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="InstructionSteps">
+    <End Type="InstPublishModel.Instruction" Role="Instruction" Multiplicity="1" />
+    <End Type="InstPublishModel.Steps" Role="Steps" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Instruction">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Steps">
+        <PropertyRef Name="InstructionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="InstructionComment">
+    <End Type="InstPublishModel.Instruction" Role="Instruction" Multiplicity="1" />
+    <End Type="InstPublishModel.Comment" Role="Comment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Instruction">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Comment">
+        <PropertyRef Name="InstructionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TagInstruction">
+    <End Type="InstPublishModel.Tag" Role="Tag" Multiplicity="1" />
+    <End Type="InstPublishModel.Instruction" Role="Instruction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tag">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Instruction">
+        <PropertyRef Name="TagId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
