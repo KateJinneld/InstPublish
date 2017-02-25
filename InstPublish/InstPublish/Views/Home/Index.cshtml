@@ -2,8 +2,14 @@
 @model IEnumerable<Instruction>
 @{
     ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
+
+.head {
+ display:inline-block;
+}
+
     img{
         margin-bottom: 15px;
     }
@@ -24,6 +30,7 @@
             text-align: center;
         }
 </style>
+
 <div class="page-header">
     <h1>InstPublish <small>Инструкции на все случаи жизни</small></h1>
 </div>
@@ -32,16 +39,23 @@
 {
     using (Html.BeginForm("Create", "Home", FormMethod.Post))
     {
-        <div class="container">
-            <div class="hero-unit">
-                <h2>@item.Title<small> - @item.Author</small></h2>
-            </div>
+        <div class="container" style="border-bottom: 1px solid #eee; margin-top: 10px">
+
+                    <div class="hero-unit head">
+                        <h2>@item.Title<small> - @item.Author</small></h2>
+
+                    </div>
+                <div class="head" style="float:right">@item.DateOfCreation.ToString()</div>
+            
+
+              
             <div class="form-group" id="groupDescription">
                 <div style="width: 100%;">
                     <ul class="Steps">
+                        @{item.Steps = item.Steps.OrderBy(obj => obj.NumberOfStep).ToList();}
                         @foreach (var step in item.Steps)
                         {
-                            <li class="ui-state-default image-link"> <img src="@step.Image" style="width: 220px; height: 220px" /> <span class="index">. </span>@step.Title</li>
+                            <li class="ui-state-default image-link"> <img src="@step.Image" style="width: 220px; height: 220px" />@step.NumberOfStep.  @step.Title</li>
                         }
                         </ul>
                     </div>
@@ -49,11 +63,10 @@
             </div>
     }
 }
-
+@section scripts{
 <script>
     $(function () {
-        $(".image-link").each(function (index, item) {
-            $(item).find(".index").html(index + 2);
-        });
+      
     });
 </script>
+    }
