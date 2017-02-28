@@ -1,0 +1,151 @@
+﻿@using InstPublish.Models
+@model IEnumerable<Instruction>
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .pressedLike{
+        background-color: chartreuse; 
+    }
+
+     .pressedDislike{
+        background-color: orangered;
+    }
+
+    .head {
+        display: inline-block;
+    }
+
+    img {
+        margin-bottom: 15px;
+    }
+    label{
+        margin-left:10px;
+        margin-right:10px;
+        margin-bottom:15px;
+    }
+    .Steps {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow: hidden;
+        min-height: 260px;
+    }
+
+        .Steps li {
+            margin: 10px 3px 10px 3px;
+            padding: 1px;
+            float: left;
+            width: 220px;
+            height: 250px;
+            text-align: center;
+        }
+</style>
+
+<div class="page-header">
+    <h1>InstPublish <small>Инструкции на все случаи жизни</small></h1>
+</div>
+@{var SortedModel = Model.OrderByDescending(obj => obj.DateOfCreation).ToList();}
+@foreach (Instruction item in SortedModel)
+{
+        <div class="container" style="border-bottom: 1px solid #eee; margin-top: 10px; margin-bottom:10px;">
+
+            <div class="hero-unit head">
+                <h2>@item.Title<small> - @item.Author</small></h2>
+
+            </div>
+            <div class="head" style="float:right">@item.DateOfCreation.ToString()</div>
+
+
+
+            <div class="form-group" id="groupDescription">
+                <div style="width: 100%;">
+                    <ul class="Steps">
+                        @{item.Steps = item.Steps.OrderBy(obj => obj.NumberOfStep).ToList();}
+                        @foreach (var step in item.Steps)
+                        {
+                            <li class="ui-state-default image-link"> <img src="@step.Image" style="width: 220px; height: 220px" />@step.NumberOfStep.  @step.Title</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="display-field">
+                <a class="fi-like size-27 none" style="color: #000000"></a>
+                <a class="fi-dislike size-27 none" style="color: #000000"></a>
+
+                
+
+                <a class="btn btn-default" @*id="@item.Id+like"*@>
+                    <span class="glyphicon glyphicon-eye-open" @*onclick="postOpinionLike(@item.Id)"*@> </span>
+                </a>
+
+                <div style="float:right">
+                    @if (ViewBag.UserId != null)
+                    {
+                        if (item.Opinions.FirstOrDefault(x => (x.OpinionsValue) && (x.UserId == ViewBag.UserId)) != null)
+                        { <a class="btn btn-default pressedLike" id="@item.Id+like" onclick="postOpinionLike(@item.Id)"> <span class="glyphicon glyphicon-thumbs-up"> </span></a>}
+                        else
+                        {
+                            <a class="btn btn-default" id="@item.Id+like">
+                                <span class="glyphicon glyphicon-thumbs-up" onclick="postOpinionLike(@item.Id)"> </span>
+                            </a>}
+                    }
+
+
+
+
+                    <label id="@item.Id" c>
+                        @(item.Opinions.Where(x => x.OpinionsValue).Count() - @item.Opinions.Where(x => !x.OpinionsValue).Count())
+                    </label>
+
+                    @if (ViewBag.UserId != null)
+                    {
+                        if (item.Opinions.FirstOrDefault(x => (!x.OpinionsValue) && (x.UserId == ViewBag.UserId)) != null)
+                        { <a class="btn btn-default pressedDislike" id="@item.Id+dis" onclick="postOpinionDislike(@item.Id)"> <span class="glyphicon glyphicon-thumbs-down"> </span></a>}
+                        else
+                        {
+                            <a class="btn btn-default" id="@item.Id+dis">
+                                <span class="glyphicon glyphicon-thumbs-down" onclick="postOpinionDislike(@item.Id)"> </span>
+                            </a>}
+                    
+                    }
+
+                </div>
+            </div>
+        </div>
+                                }
+                            
+@section scripts{
+    <script>
+        function postOpinionLike(index) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SetOpinion", "Home")',
+                data: { instructionId: index, opinionValue: true },
+                success: function (msg) {
+                    document.getElementById(index).innerHTML = msg;
+                    document.getElementById(index + "+like").style = "background-color: chartreuse";
+                    document.getElementById(index + "+dis").style = "background-color: white";
+                }
+            });
+        }
+        function postOpinionDislike(index) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SetOpinion", "Home")',
+                data: { instructionId: index, opinionValue: false },
+                success: function (msg) {
+                    document.getElementById(index).innerHTML = msg;
+                    document.getElementById(index + "+like").style = "background-color: white";
+                    document.getElementById(index + "+dis").style = "background-color: orangered";
+                }
+            });
+        }
+
+        $(function () {
+
+    });
+    </script>
+}
