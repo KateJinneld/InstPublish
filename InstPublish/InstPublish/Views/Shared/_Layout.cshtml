@@ -29,7 +29,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @*<li>@Html.ActionLink("Home", "Index", "Home")</li>*@
-                    <li>@Html.ActionLink("Create Instruction", "CreateInstruction", "Home", htmlAttributes: new { Style = "color: white" })</li>
+                    <li>@Html.ActionLink("Create Instruction", "CreateInstruction", "Home", new { instructionId = 0}, htmlAttributes: new { Style = "color: white" })</li>
                     
                 </ul>
                 @Html.Partial("_LoginPartial")

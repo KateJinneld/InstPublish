@@ -36,8 +36,9 @@
 <h2>Редактор инструкций</h2>
 
 <div class="instruction-Contaner">
-    @using (Html.BeginForm("Create", "Home", FormMethod.Post))
+    @using (Html.BeginForm("AddInstruction", "Home", FormMethod.Post)) /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     {
+        @Html.ValidationSummary(true)
         <div class="form-group" id="groupDescription">
             @Html.LabelFor(m => m.Title, "Введите заголовок:", new { @class = "col-md-2 control-label" })
             <div class="col-md-3" id="groupDescription">
@@ -68,17 +69,13 @@
             <div class="form-group">
                 @Html.LabelFor(m => m.Tags, "Введите теги:", new { @class = "col-md-2 control-label"})
                 <div class="col-md-5" id="groupDescription">
-                    @*@for (int i = 0; i < Model.Tags.Count; i++)
-                    {
-                        <span class="myTag" id="Tags_@i">
-                            <span>@Model.Tags[i].Text"&nbsp;&nbsp;</span>
-                    <a href="#" class="myTagRemover" id="Tags_Remover_@i " tagidtoremove="@i" title="Remove">x</a>
-</span>
-                    }*@
                     @Html.TextBoxFor(m => m.Tags, new { @class = "form-control" })
                    
                 </div>
             </div>
+            <button type="submit" class="btn btn-default btn-mine">
+                <span class="fi-save">Сохранить</span>
+            </button>
     }
                 <div style="width: 100%;">
                     <ul class="sortable">

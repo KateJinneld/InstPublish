@@ -15,23 +15,55 @@ namespace InstPublish.Controllers
     public class HomeController : Controller
     {
         public InstructionContext dataBase = new InstructionContext();
-        
+
+        public DateTime DataTime { get; private set; }
+
         public ActionResult Index()
         {
             List<Instruction> list = new List<Instruction>();
-               // list = dataBase.Instructions//.Where(x => x.Id>0).ToList();
                 ViewBag.Count = list.Count;
             ViewBag.UserId = User.Identity.GetUserId();
                 return View(dataBase.Instructions);
             
         }
-        [Authorize]
-        public ActionResult CreateInstruction()
-        {
 
-           
-           
-            return View(dataBase.Instructions.ToList()[0]);
+
+        [Authorize]
+        public ActionResult CreateInstruction(int instructionId)
+        {
+            if (instructionId != 0)
+            {
+                Instruction instruction = dataBase.Instructions.FirstOrDefault(x => x.Id == instructionId);
+                return View(instruction);
+            }
+            return View(new Instruction());
+        }
+
+        [Authorize]
+        public ActionResult RedactInstruction(int instructionId)
+        {
+            Instruction instruction = dataBase.Instructions.FirstOrDefault(x => x.Id == instructionId);
+            return View(instruction);
+        }
+
+
+        [HttpPost]
+        public ActionResult AddInstruction(Instruction newInstruction, int[] selectedTags)
+        {
+            if (ModelState.IsValid)
+            {
+                newInstruction.Author = User.Identity.Name;
+                newInstruction.DateOfCreation = DateTime.Now;
+                newInstruction.UserId = User.Identity.GetUserId();
+                dataBase.Instructions.Add(newInstruction);
+                dataBase.SaveChanges();
+
+            }
+            else
+            {
+                ModelState.AddModelError("", "Введены некорректные данные");
+            }
+            return RedirectToAction("Index");
         }
 
 
@@ -66,7 +98,7 @@ namespace InstPublish.Controllers
     
 
         [HttpPost]
-        public void DeleteInstruction(int instructionId)
+        public ActionResult DeleteInstruction(int instructionId)
         {
             Instruction instructions = dataBase.Instructions
                 .Include(x => x.Steps)
@@ -80,6 +112,7 @@ namespace InstPublish.Controllers
                 dataBase.Instructions.Remove(instructions);
                 dataBase.SaveChanges();
             }
+            return RedirectToAction("Index");
         }
 
 

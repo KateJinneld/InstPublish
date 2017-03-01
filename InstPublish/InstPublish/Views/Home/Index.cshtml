@@ -1,4 +1,5 @@
 ﻿@using InstPublish.Models
+@using Microsoft.AspNet.Identity
 @model IEnumerable<Instruction>
 @{
     ViewBag.Title = "Home Page";
@@ -43,80 +44,98 @@
             text-align: center;
         }
 </style>
-
-<div class="page-header">
-    <h1>InstPublish <small>Инструкции на все случаи жизни</small></h1>
-</div>
-@{var SortedModel = Model.OrderByDescending(obj => obj.DateOfCreation).ToList();}
-@foreach (Instruction item in SortedModel)
-{
+<div id="InstructionsContainer">
+    <div class="page-header">
+        <h1>InstPublish <small>Инструкции на все случаи жизни</small></h1>
+    </div>
+    @{var SortedInstructions = Model.OrderByDescending(obj => obj.DateOfCreation).ToList();}
+    @foreach (Instruction instruction in SortedInstructions)
+    {
         <div class="container" style="border-bottom: 1px solid #eee; margin-top: 10px; margin-bottom:10px;">
 
             <div class="hero-unit head">
-                <h2>@item.Title<small> - @item.Author</small></h2>
+                <h2>
+                    @instruction.Title<small> - @instruction.Author</small>
 
+                </h2>
             </div>
-            <div class="head" style="float:right">@item.DateOfCreation.ToString()</div>
+            <div class="head" style="float:right">
+                @instruction.DateOfCreation.ToString()
+            @if (instruction.UserId == User.Identity.GetUserId())
+            {
+                using (Html.BeginForm("CreateInstruction", "Home", new { instructionId = instruction.Id }, FormMethod.Post, new { style = "display: inline-block;" }))
+                {                  
+                    <button type="submit" class="btn btn-default">
+                        <span class="glyphicon glyphicon-pencil"> </span>
+                        
+                    </button>
+                }
+                           
+                            using (Ajax.BeginForm("DeleteInstruction", new { instructionId = instruction.Id }, new AjaxOptions { Confirm = "Вы действительно желаете удалить запись?" }, new { style = "display: inline-block; margin-right: 5px;" }))
+                            {
+                    <button type="submit" class="btn btn-default btn-mine">
+                        <span class="glyphicon glyphicon-remove"> </span>
+                    </button>
+                }
+            }
+        </div>
 
 
 
-            <div class="form-group" id="groupDescription">
-                <div style="width: 100%;">
-                    <ul class="Steps">
-                        @{item.Steps = item.Steps.OrderBy(obj => obj.NumberOfStep).ToList();}
-                        @foreach (var step in item.Steps)
-                        {
-                            <li class="ui-state-default image-link"> <img src="@step.Image" style="width: 220px; height: 220px" />@step.NumberOfStep.  @step.Title</li>
-                        }
-                    </ul>
-                </div>
-            </div>
-            <div class="display-field">
-                <a class="fi-like size-27 none" style="color: #000000"></a>
-                <a class="fi-dislike size-27 none" style="color: #000000"></a>
-
-                
-
-                <a class="btn btn-default" @*id="@item.Id+like"*@>
-                    <span class="glyphicon glyphicon-eye-open" @*onclick="postOpinionLike(@item.Id)"*@> </span>
-                </a>
-
-                <div style="float:right">
-                    @if (ViewBag.UserId != null)
+        <div class="form-group" id="groupDescription">
+            <div style="width: 100%;">
+                <ul class="Steps">
+                    @{instruction.Steps = instruction.Steps.OrderBy(obj => obj.NumberOfStep).ToList();}
+                    @foreach (var step in instruction.Steps)
                     {
-                        if (item.Opinions.FirstOrDefault(x => (x.OpinionsValue) && (x.UserId == ViewBag.UserId)) != null)
-                        { <a class="btn btn-default pressedLike" id="@item.Id+like" onclick="postOpinionLike(@item.Id)"> <span class="glyphicon glyphicon-thumbs-up"> </span></a>}
-                        else
-                        {
-                            <a class="btn btn-default" id="@item.Id+like">
-                                <span class="glyphicon glyphicon-thumbs-up" onclick="postOpinionLike(@item.Id)"> </span>
-                            </a>}
+                        <li class="ui-state-default image-link"> <img src="@step.Image" style="width: 220px; height: 220px" />@step.NumberOfStep.  @step.Title</li>
                     }
-
-
-
-
-                    <label id="@item.Id" c>
-                        @(item.Opinions.Where(x => x.OpinionsValue).Count() - @item.Opinions.Where(x => !x.OpinionsValue).Count())
-                    </label>
-
-                    @if (ViewBag.UserId != null)
-                    {
-                        if (item.Opinions.FirstOrDefault(x => (!x.OpinionsValue) && (x.UserId == ViewBag.UserId)) != null)
-                        { <a class="btn btn-default pressedDislike" id="@item.Id+dis" onclick="postOpinionDislike(@item.Id)"> <span class="glyphicon glyphicon-thumbs-down"> </span></a>}
-                        else
-                        {
-                            <a class="btn btn-default" id="@item.Id+dis">
-                                <span class="glyphicon glyphicon-thumbs-down" onclick="postOpinionDislike(@item.Id)"> </span>
-                            </a>}
-                    
-                    }
-
-                </div>
+                </ul>
             </div>
         </div>
-                                }
-                            
+        <div class="display-field">
+            <a class="fi-like size-27 none" style="color: #000000"></a>
+            <a class="fi-dislike size-27 none" style="color: #000000"></a>
+
+
+
+            <a class="btn btn-default" @*id="@item.Id+like"*@>
+                <span class="glyphicon glyphicon-eye-open" @*onclick="postOpinionLike(@item.Id)"*@> </span>
+            </a>
+
+            <div style="float:right">
+                @if (ViewBag.UserId != null)
+                {
+                    if (instruction.Opinions.FirstOrDefault(x => (x.OpinionsValue) && (x.UserId == ViewBag.UserId)) != null)
+                    { <a class="btn btn-default pressedLike" id="@instruction.Id+like" onclick="postOpinionLike(@instruction.Id)"> <span class="glyphicon glyphicon-thumbs-up"> </span></a>}
+                    else
+                    {
+                        <a class="btn btn-default" id="@instruction.Id+like">
+                            <span class="glyphicon glyphicon-thumbs-up" onclick="postOpinionLike(@instruction.Id)"> </span>
+                        </a>}
+                }
+                <label id="@instruction.Id" c>
+                    @(instruction.Opinions.Where(x => x.OpinionsValue).Count() - instruction.Opinions.Where(x => !x.OpinionsValue).Count())
+                </label>
+
+                @if (ViewBag.UserId != null)
+                {
+                    if (instruction.Opinions.FirstOrDefault(x => (!x.OpinionsValue) && (x.UserId == ViewBag.UserId)) != null)
+                    { <a class="btn btn-default pressedDislike" id="@instruction.Id+dis" onclick="postOpinionDislike(@instruction.Id)"> <span class="glyphicon glyphicon-thumbs-down"> </span></a>}
+                    else
+                    {
+                        <a class="btn btn-default" id="@instruction.Id+dis">
+                            <span class="glyphicon glyphicon-thumbs-down" onclick="postOpinionDislike(@instruction.Id)"> </span>
+                        </a>}
+
+                }
+
+            </div>
+        </div>
+    </div>
+                        }
+</div>
+
 @section scripts{
     <script>
         function postOpinionLike(index) {
