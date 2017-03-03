@@ -85,7 +85,7 @@
                                 <li class="ui-state-default image-link"> <img src="@item.Image" style="width: 220px; height: 220px" /><span class="index"></span>.  @item.Title</li>
                                 </a>
                                 }
-                                <li class="ui-state-default some" draggable="false"><img src="http://img.freepik.com/free-icon/plus-positive-add-mathematical-symbol_318-59636.jpg?size=338&ext=jpg" style="width: 220px; height: 220px" onclick="createStep()" /> </li>
+                                <li class="ui-state-default buttonAddNewStep" draggable="false"><img src="http://img.freepik.com/free-icon/plus-positive-add-mathematical-symbol_318-59636.jpg?size=338&ext=jpg" style="width: 220px; height: 220px" onclick="createStep()" /> </li>
 </ul>
 
                 </div>
@@ -100,10 +100,11 @@
         blinkBGColor_2: '#CDE69C',
         });
     function createStep() {
-        $('.sortable').append($('<li class="ui-state-default image-link"><img src="http://www.amfmph.com/wp-content/plugins/social-media-builder//img/no-image.png" style="width: 220px; height: 220px" /><span class="index"></span>.  Кликните, чтобы редактировать</li>'));
+        var newStepHtml = '<li class="ui-state-default image-link"><img src="http://www.amfmph.com/wp-content/plugins/social-media-builder//img/no-image.png" style="width: 220px; height: 220px" /><span class="index"></span>.  Кликните, чтобы редактировать</li>';
         $(".image-link").each(function (index, item) {
             $(item).find(".index").html(index);
         });
+        $(".buttonAddNewStep").before(newStepHtml);
     };
     $(function () {
         $(".image-link").each(function (index, item) {
@@ -118,7 +119,7 @@
                     $(item).find(".index").html(index+1);
                 });
             },
-            cancel: ".some"
+            items: '> :not(.buttonAddNewStep)'
         });
        
         $(".sortable").disableSelection();      

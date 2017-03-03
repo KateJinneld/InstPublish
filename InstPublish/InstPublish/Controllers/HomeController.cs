@@ -42,6 +42,7 @@ namespace InstPublish.Controllers
             if (instructionId != 0)
             {
                 Instruction instruction = dataBase.Instructions.FirstOrDefault(x => x.Id == instructionId);
+                instruction.Steps = instruction.Steps.OrderBy(obj => obj.NumberOfStep).ToList();
                 return View(instruction);
             }
             return View(new Instruction());
@@ -53,7 +54,6 @@ namespace InstPublish.Controllers
             Instruction instruction = dataBase.Instructions.FirstOrDefault(x => x.Id == instructionId);
             return View(instruction);
         }
-
 
         [HttpPost]
         public ActionResult AddInstruction(Instruction newInstruction, int[] selectedTags)
@@ -74,6 +74,14 @@ namespace InstPublish.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult ChangeStep(Step changedStep)
+        {
+            Step step = dataBase.Steps.FirstOrDefault(x => x.Id == changedStep.Id);
+            step.Title = changedStep.Title;
+            step.Description = changedStep.Description;
+            dataBase.SaveChanges();
+            return RedirectToAction("CreateInstruction", new { instructionId = changedStep.InstructionId});
+        }
 
         [HttpPost]
         public string SetOpinion(int instructionId, bool opinionValue)
@@ -103,7 +111,8 @@ namespace InstPublish.Controllers
             return (instr.Opinions.Where(x => x.OpinionsValue).Count() - instr.Opinions.Where(x => !x.OpinionsValue).Count()).ToString();
         }
         
-    
+
+        
 
         [HttpPost]
         public void DeleteInstruction(int instructionId)
