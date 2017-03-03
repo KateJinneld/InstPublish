@@ -1,0 +1,63 @@
+﻿@model InstPublish.Models.Step
+@{
+    ViewBag.Title = "Step";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="jumbotron" style="float:left; wi">
+
+    <form action="~/Home/SaveUploadedFile?instructionId=@Model.InstructionId&stepId=@Model.Id" method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm" style="background: none; border: none;">
+        <div class="fallback">
+            <input name="file" type="file" multiple />
+            <input type="submit" id="sub" value="Upload" onclick="alert('UploadFile')" />
+        </div>
+    </form>
+</div>
+
+
+@Scripts.Render("~/scripts/jquery-1.10.2.js")
+
+
+@section scripts{
+<script>
+ $(function() {
+
+        //File Upload response from the server
+     Dropzone.options.dropzoneForm = {
+         maxFiles: 10,
+         success: function (file, response) {
+             $('#qwer').click();
+         },
+         init: function () {
+             this.on("maxfilesexceeded", function (data) {
+                 var res = eval('(' + data.xhr.responseText + ')');
+
+             });
+
+             //this.on("addedfile", function (file) {
+
+             //    // Create the remove button
+             //    var removeButton = Dropzone.createElement(" <button>Remove file</button>");
+
+             //    // Capture the Dropzone instance as closure.
+             //    var _this = this;
+
+             //    // Listen to the click event
+             //    removeButton.addEventListener("click", function (e) {
+             //        // Make sure the button click doesn't submit the form:
+             //        e.preventDefault();
+             //        e.stopPropagation();
+             //        // Remove the file preview.
+             //        _this.removeFile(file);
+             //        // If you want to the delete the file on the server as well,
+             //        // you can do the AJAX request here.
+             //    });
+
+             //    // Add the button to the file preview element.
+             //    file.previewElement.appendChild(removeButton);
+
+             });
+         }
+     };
+     });
+</script>
+}

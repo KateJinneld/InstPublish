@@ -97,3 +97,4 @@ D:\Itransition\Project\InstPublish\InstPublish\obj\Debug\InstPublish.pdb
 D:\Itransition\Project\InstPublish\InstPublish\bin\Duke.Owin.VkontakteMiddleware.dll
 D:\Itransition\Project\InstPublish\InstPublish\obj\Debug\InstPublish.Migrations.NewDataBaseMig_on.resources
 D:\Itransition\Project\InstPublish\InstPublish\obj\Debug\InstPublish.csproj.GenerateResource.Cache
+D:\Itransition\Project\InstPublish\InstPublish\bin\CloudinaryDotNet.dll

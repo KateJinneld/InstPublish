@@ -80,22 +80,20 @@
                 <div style="width: 100%;">
                     <ul class="sortable">
                         @foreach (var item in Model.Steps)
-                {
-                            <li class="ui-state-default image-link"> <img src="@item.Image" style="width: 220px; height: 220px" /><span class="index"></span>.  @item.Title</li>
-                        }
-                        <li class="ui-state-default some" draggable="false"><img src="http://img.freepik.com/free-icon/plus-positive-add-mathematical-symbol_318-59636.jpg?size=338&ext=jpg" style="width: 220px; height: 220px" onclick="createStep()" /> </li>
-                    </ul>
+                        {
+                            <a href="/Home/Step?instructionId=@Model.Id&stepId=@item.Id">
+                                <li class="ui-state-default image-link"> <img src="@item.Image" style="width: 220px; height: 220px" /><span class="index"></span>.  @item.Title</li>
+                                </a>
+                                }
+                                <li class="ui-state-default some" draggable="false"><img src="http://img.freepik.com/free-icon/plus-positive-add-mathematical-symbol_318-59636.jpg?size=338&ext=jpg" style="width: 220px; height: 220px" onclick="createStep()" /> </li>
+</ul>
 
                 </div>
             </div>
 
-
-
-
 @section scripts{
     <script>
         document.getElementById("Tags").value = ""
-
         var availableTags = ["games", "test"] 
         jQuery("#Tags").tagsManager({
             blinkBGColor_1: '#FFFF9C',

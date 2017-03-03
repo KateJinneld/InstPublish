@@ -19,7 +19,14 @@ namespace InstPublish
             bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
                 "~/Scripts/jquery-ui-1.12.1.js",
                 "~/Scripts/jquery-ui-1.12.1.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/dropzonescripts").Include(
+                    "~/Scripts/dropzone/dropzone.js"));
+            bundles.Add(new ScriptBundle("~/bundles/fabric").Include(
+                     "~/Scripts/fabric.js"));
 
+            bundles.Add(new StyleBundle("~/Content/dropzonescss").Include(
+                     "~/Scripts/dropzone/basic.css",
+                     "~/Scripts/dropzone/dropzone.css"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.

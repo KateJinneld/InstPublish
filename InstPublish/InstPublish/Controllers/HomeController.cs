@@ -8,6 +8,10 @@ using InstPublish.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
+using System.IO;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using System.Web.UI.WebControls;
 
 namespace InstPublish.Controllers
 {
@@ -27,9 +31,13 @@ namespace InstPublish.Controllers
             
         }
 
+        public ActionResult Step(int instructionId,int stepId)
+        {
+            return View(dataBase.Steps.FirstOrDefault(x => (x.Id == stepId) && (x.InstructionId == instructionId)));
+        }
 
         [Authorize]
-        public ActionResult CreateInstruction(int instructionId)
+        public ActionResult CreateInstruction(int instructionId=0)
         {
             if (instructionId != 0)
             {
@@ -98,7 +106,7 @@ namespace InstPublish.Controllers
     
 
         [HttpPost]
-        public ActionResult DeleteInstruction(int instructionId)
+        public void DeleteInstruction(int instructionId)
         {
             Instruction instructions = dataBase.Instructions
                 .Include(x => x.Steps)
@@ -112,7 +120,7 @@ namespace InstPublish.Controllers
                 dataBase.Instructions.Remove(instructions);
                 dataBase.SaveChanges();
             }
-            return RedirectToAction("Index");
+            //return "success";
         }
 
 
@@ -153,5 +161,80 @@ namespace InstPublish.Controllers
 
             return View();
         }
+
+        ////////////////////////////DROPZONE
+        public ActionResult SaveUploadedFile(int instructionId, int stepId)
+        {
+            bool isSavedSuccessfully = true;
+            string fName = "";
+            try
+            {
+                foreach (string fileName in Request.Files)
+                {
+                    HttpPostedFileBase file = Request.Files[fileName];
+                    //Save file content goes here
+                    fName = file.FileName;
+                    if (file != null && file.ContentLength > 0)
+                    {
+
+                        var originalDirectory = new DirectoryInfo(string.Format("{0}Images\\WallImages", Server.MapPath(@"\")));
+
+                        string pathString = System.IO.Path.Combine(originalDirectory.ToString(), "imagepath");
+
+                        var fileName1 = Path.GetFileName(file.FileName);
+
+                        bool isExists = System.IO.Directory.Exists(pathString);
+
+                        if (!isExists)
+                            System.IO.Directory.CreateDirectory(pathString);
+
+                        var path = string.Format("{0}\\{1}", pathString, file.FileName);
+                        file.SaveAs(path);
+
+                        Account account = new Account(
+                                        "mrgoldy",
+                            "832584879924415",
+                            "DynmE9VRkVfJHDPlIeFvw5BDH40");
+                        Cloudinary cloudinary = new Cloudinary(account);
+                        var uploadParams = new ImageUploadParams()
+                        {
+                            File = new FileDescription(path)
+                        };
+                        var uploadResult = cloudinary.Upload(uploadParams);
+                        dataBase.Steps.FirstOrDefault(x => x.Id == stepId).Image = "http://res.cloudinary.com"+uploadResult.Uri.AbsolutePath;
+                        dataBase.SaveChanges();
+                        
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                isSavedSuccessfully = false;
+            }
+
+            if (isSavedSuccessfully)
+            {
+                return Json(new { Message = fName });
+            }
+            else
+            {
+                return Json(new { Message = "Error in saving file" });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

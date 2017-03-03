@@ -51,7 +51,7 @@
     @{var SortedInstructions = Model.OrderByDescending(obj => obj.DateOfCreation).ToList();}
     @foreach (Instruction instruction in SortedInstructions)
     {
-        <div class="container" style="border-bottom: 1px solid #eee; margin-top: 10px; margin-bottom:10px;">
+        <div class="container" id="@instruction.Id+onDelete" style="border-bottom: 1px solid #eee; margin-top: 10px; margin-bottom:10px;">
 
             <div class="hero-unit head">
                 <h2>
@@ -64,19 +64,19 @@
             @if (instruction.UserId == User.Identity.GetUserId())
             {
                 using (Html.BeginForm("CreateInstruction", "Home", new { instructionId = instruction.Id }, FormMethod.Post, new { style = "display: inline-block;" }))
-                {                  
+                {
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-pencil"> </span>
                         
                     </button>
                 }
-                           
-                            using (Ajax.BeginForm("DeleteInstruction", new { instructionId = instruction.Id }, new AjaxOptions { Confirm = "Вы действительно желаете удалить запись?" }, new { style = "display: inline-block; margin-right: 5px;" }))
-                            {
-                    <button type="submit" class="btn btn-default btn-mine">
+
+                //using (Ajax.BeginForm("DeleteInstruction", new { instructionId = instruction.Id }, new AjaxOptions { Confirm = "Вы действительно желаете удалить запись?" }, new { style = "display: inline-block; margin-right: 5px;" }))
+                //{
+                    <button type="submit" onclick="deleteInstruction(@instruction.Id)" class="btn btn-default btn-mine">
                         <span class="glyphicon glyphicon-remove"> </span>
                     </button>
-                }
+                //}
             }
         </div>
 
@@ -162,7 +162,18 @@
                 }
             });
         }
-
+        function deleteInstruction(index) {
+            if (confirm('Are you sure you want to delete instruction?')) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteInstruction", "Home")',
+                    data: { instructionId: index },
+                    success: function () {
+                        document.getElementById(index + "+onDelete").remove();
+                    }
+                });
+            }
+        }
         $(function () {
 
     });
