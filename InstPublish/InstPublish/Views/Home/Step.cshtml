@@ -14,87 +14,121 @@
          text-align: center;
     }
 </style>
-@if (Model.Image == null) {
-<div class="jumbotron" style="float:left; width: 400px; height: 400px">
-    <form action="~/Home/SaveUploadedFile?instructionId=@Model.InstructionId&stepId=@Model.Id" method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm" style="background: none; border: none; width: 400px; height: 400px">
-        <div class="fallback">
-            <input name="file" type="file" multiple />
-            <input type="submit" id="sub" value="Upload" onclick="alert('UploadFile')" />
+<div id="insertPhoto">
+    @if (Model.Image == null)
+    {
+        <div class="showDropZone">
+            <div class="jumbotron" style="float:left; width: 400px; height: 400px">
+                <form action="~/Home/SaveUploadedFile?instructionId=@Model.InstructionId&stepId=@Model.Id" method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm" style="background: none; border: none; width: 400px; height: 400px">
+                    <div class="fallback">
+                        <input name="file" type="file" multiple />
+                        <input type="submit" id="sub" value="Upload" onclick="alert('UploadFile')" />
+                    </div>
+                </form>
+            </div>
         </div>
-    </form>
+    }
+    else
+    {
+        <div class="showPhoto">
+            <div class="stepImage">
+                <img src="@Model.Image" style="width: 320px; height: 320px" />
+                <a class="btn btn-default">
+                    <span class="glyphicon glyphicon-upload" onclick="switchPhotoZone()"> </span>
+                </a>
+            </div>
+        </div>
+    }
 </div>
-} else
-{
-    <div class="stepImage">
-        <img src = "@Model.Image" style = "width: 320px; height: 320px" />
-        @*<a class="btn btn-default">
-            <span class="glyphicon glyphicon-upload" onclick="uploadPhotoZone()"> </span>
-            </a>*@
-</div>
-}
-@using (Html.BeginForm("ChangeStep", "Home", FormMethod.Post)) /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-{
-    @Html.ValidationSummary(true);
-    @Html.HiddenFor(m=>m.Id)
-    @Html.HiddenFor(m=>m.InstructionId)
-    <div class="form-group" id="groupDescription">
-        @Html.LabelFor(m => m.Title, "Введите заголовок:", new { @class = "col-md-2 control-label" })
-        <div class="col-md-3" id="groupDescription">
-            @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
-        </div>
-        
-    </div>
-    <div class="form-group" id="groupDescription">
-        @Html.LabelFor(m => m.Description, "Введите описание:", new { @class = "col-md-2 control-label" })
-        <div class="col-md-3" id="groupDescription">
-            @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
-        </div>
-        
-    </div>
-    <button type="submit" class="btn btn-default btn-mine">
-        <span class="fi-save">Сохранить</span>
-    </button>
-}
-        @Scripts.Render("~/scripts/jquery-1.10.2.js")
 
+        @using (Html.BeginForm("ChangeStep", "Home", FormMethod.Post)) /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        {
+            @Html.ValidationSummary(true);
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.InstructionId)
+            <div class="form-group" id="groupDescription">
+                @Html.LabelFor(m => m.Title, "Введите заголовок:", new { @class = "col-md-2 control-label" })
+                <div class="col-md-3" id="groupDescription">
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                </div>
+
+            </div>
+            <div class="form-group" id="groupDescription">
+                @Html.LabelFor(m => m.Description, "Введите описание:", new { @class = "col-md-2 control-label" })
+                <div class="col-md-3" id="groupDescription">
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+                </div>
+
+            </div>
+            <button type="submit" class="btn btn-default btn-mine">
+                <span class="fi-save">Сохранить</span>
+            </button>
+        }
+        @Scripts.Render("~/scripts/jquery-1.10.2.js")
 
         @section scripts{
             <script>
+                var a = false;
+                function switchPhotoZone() {
+                    if (a){
+                        
+                        document.getElementById("insertPhoto").innerHTML = '<div class="showDropZone">'+
+        '<div class="jumbotron" style="float:left; width: 400px; height: 400px">'+
+            '<form action="~/Home/SaveUploadedFile?instructionId=@Model.InstructionId&stepId=@Model.Id" method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm" style="background: none; border: none; width: 400px; height: 400px">'+
+                        '<div class="fallback">'+
+                '<input name="file" type="file" multiple />'+
+                    '<input type="submit" id="sub" value="Upload"/>'+
+                        '</div>'+
+                        '</form>'+
+            '</div>'+
+        '</div>';
+                        a = false;
+                    } else {
+                        document.getElementById("insertPhoto").innerHTML = '<div class="showPhoto">'+
+                   '<div class="stepImage">' +
+                        '<img src="@Model.Image" style="width: 320px; height: 320px" />'+
+                        '<a class="btn btn-default">'+
+                        '<span class="glyphicon glyphicon-upload" onclick="switchPhotoZone()"> </span>'+
+                        '</a>'+
+                       '</div>'+
+                   '</div>';
+                        a = true;
+                    }
+                }
+
                 $(function () {
 
                     //File Upload response from the server
                     Dropzone.options.dropzoneForm = {
-                        maxFiles: 10,
+                        maxFiles: 1,
                         success: function (file, response) {
-                            $('#qwer').click();
                         },
                         init: function () {
                             this.on("maxfilesexceeded", function (data) {
                                 var res = eval('(' + data.xhr.responseText + ')');
-
                             });
 
                             //this.on("addedfile", function (file) {
+                               
+                            ////    // Create the remove button
+                            ////    var removeButton = Dropzone.createElement(" <button>Remove file</button>");
 
-                            //    // Create the remove button
-                            //    var removeButton = Dropzone.createElement(" <button>Remove file</button>");
+                            ////    // Capture the Dropzone instance as closure.
+                            ////    var _this = this;
 
-                            //    // Capture the Dropzone instance as closure.
-                            //    var _this = this;
+                            ////    // Listen to the click event
+                            ////    removeButton.addEventListener("click", function (e) {
+                            ////        // Make sure the button click doesn't submit the form:
+                            ////        e.preventDefault();
+                            ////        e.stopPropagation();
+                            ////        // Remove the file preview.
+                            ////        _this.removeFile(file);
+                            ////        // If you want to the delete the file on the server as well,
+                            ////        // you can do the AJAX request here.
+                            ////    });
 
-                            //    // Listen to the click event
-                            //    removeButton.addEventListener("click", function (e) {
-                            //        // Make sure the button click doesn't submit the form:
-                            //        e.preventDefault();
-                            //        e.stopPropagation();
-                            //        // Remove the file preview.
-                            //        _this.removeFile(file);
-                            //        // If you want to the delete the file on the server as well,
-                            //        // you can do the AJAX request here.
-                            //    });
-
-                            //    // Add the button to the file preview element.
-                            //    file.previewElement.appendChild(removeButton);
+                            ////    // Add the button to the file preview element.
+                            ////    file.previewElement.appendChild(removeButton);
 
                             //});
                         }

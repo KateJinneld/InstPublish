@@ -13,10 +13,10 @@ namespace InstPublish.Models
         public string Author { get; set; }
         public string LinkToYouTubeVideo { get; set; }
         public DateTime DateOfCreation { get; set; }
-        public virtual ICollection<Step> Steps { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Tag> Tags { get; set; }
-        public virtual ICollection<Opinion> Opinions { get; set; }
+        public virtual List<Step> Steps { get; set; }
+        public virtual List<Comment> Comments { get; set; }
+        public virtual List<Tag> Tags { get; set; }
+        public virtual List<Opinion> Opinions { get; set; }
 
         public Instruction()
         {

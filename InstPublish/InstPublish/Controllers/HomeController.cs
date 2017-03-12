@@ -63,9 +63,10 @@ namespace InstPublish.Controllers
                 newInstruction.Author = User.Identity.Name;
                 newInstruction.DateOfCreation = DateTime.Now;
                 newInstruction.UserId = User.Identity.GetUserId();
+                if (dataBase.Instructions.FirstOrDefault(x => x.Id == newInstruction.Id) != null)
+                    DeleteInstruction(newInstruction.Id);
                 dataBase.Instructions.Add(newInstruction);
                 dataBase.SaveChanges();
-
             }
             else
             {
@@ -110,9 +111,18 @@ namespace InstPublish.Controllers
            
             return (instr.Opinions.Where(x => x.OpinionsValue).Count() - instr.Opinions.Where(x => !x.OpinionsValue).Count()).ToString();
         }
-        
 
-        
+        [HttpPost]
+        public void DeleteStep(int stepId)
+        {
+            Step step = dataBase.Steps.FirstOrDefault(x => x.Id == stepId);
+            if (step != null)
+            {
+                dataBase.Steps.Remove(step);
+                dataBase.SaveChanges();
+            }
+        }
+
 
         [HttpPost]
         public void DeleteInstruction(int instructionId)
@@ -129,30 +139,7 @@ namespace InstPublish.Controllers
                 dataBase.Instructions.Remove(instructions);
                 dataBase.SaveChanges();
             }
-            //return "success";
         }
-
-
-
-
-        [HttpPost]
-        public ActionResult AddStep(int NumberOfStep, int InstructionId)
-        {
-            try
-            {
-                Step step = new Step();
-                step.NumberOfStep = NumberOfStep;
-                step.InstructionId = InstructionId;
-                dataBase.Steps.Add(step);
-                dataBase.SaveChanges();
-                return Json(new { Message = "Successfully" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { Message = "There is error in function \"AddStep\""});
-            }
-        }
-
 
        [HttpPost]
         public ActionResult StepsModule(int instructionId)
@@ -171,7 +158,6 @@ namespace InstPublish.Controllers
             return View();
         }
 
-        ////////////////////////////DROPZONE
         public ActionResult SaveUploadedFile(int instructionId, int stepId)
         {
             bool isSavedSuccessfully = true;
@@ -217,7 +203,7 @@ namespace InstPublish.Controllers
 
                 }
             }
-            catch (Exception ex)
+            catch 
             {
                 isSavedSuccessfully = false;
             }

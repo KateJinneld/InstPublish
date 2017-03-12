@@ -218,6 +218,10 @@
     <Compile Include="Migrations\201702241929468_NewDataBaseMig_on.Designer.cs">
       <DependentUpon>201702241929468_NewDataBaseMig_on.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703072009505_List Added.cs" />
+    <Compile Include="Migrations\201703072009505_List Added.Designer.cs">
+      <DependentUpon>201703072009505_List Added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Comment.cs" />
@@ -377,6 +381,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201702241929468_NewDataBaseMig_on.resx">
       <DependentUpon>201702241929468_NewDataBaseMig_on.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703072009505_List Added.resx">
+      <DependentUpon>201703072009505_List Added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
