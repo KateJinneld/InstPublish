@@ -5,17 +5,30 @@
 }
 
 <style>
-     .stepImage {     
-        margin: 0;
+    .inputs{
+         margin-top:10px;     
+        float:right;
+    }
+     .stepImage {
+         margin-top:10px;     
+      
+        padding: 0;
+        width: 100%;
+        overflow: hidden;
+        min-height: 260px;    
+        
+    }
+      .showDropZone {     
+        margin-top:10px;     
         padding: 0;
         width: 100%;
         overflow: hidden;
         min-height: 260px;
-         text-align: center;
+       
     }
 </style>
-<div id="insertPhoto">
-    @if (Model.Image == null)
+<div id="insertPhoto" class="col-md-5 control-label">
+    @if (Model.Image != null)
     {
         <div class="showDropZone">
             <div class="jumbotron" style="float:left; width: 400px; height: 400px">
@@ -25,82 +38,64 @@
                         <input type="submit" id="sub" value="Upload" onclick="alert('UploadFile')" />
                     </div>
                 </form>
-            </div>
+                
+</div>
         </div>
-    }
-    else
-    {
-        <div class="showPhoto">
-            <div class="stepImage">
-                <img src="@Model.Image" style="width: 320px; height: 320px" />
-                <a class="btn btn-default">
-                    <span class="glyphicon glyphicon-upload" onclick="switchPhotoZone()"> </span>
-                </a>
-            </div>
-        </div>
+        <a class="btn btn-default">
+            <span class="glyphicon glyphicon-upload" onclick="switchPhotoZone()"> </span>
+        </a>
     }
 </div>
-
-        @using (Html.BeginForm("ChangeStep", "Home", FormMethod.Post)) /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        {
-            @Html.ValidationSummary(true);
-            @Html.HiddenFor(m => m.Id)
-            @Html.HiddenFor(m => m.InstructionId)
-            <div class="form-group" id="groupDescription">
-                @Html.LabelFor(m => m.Title, "Введите заголовок:", new { @class = "col-md-2 control-label" })
-                <div class="col-md-3" id="groupDescription">
-                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
-                </div>
-
+<div class="col-md-7 control-label" style="float:left">
+    @using (Html.BeginForm("ChangeStep", "Home", FormMethod.Post))
+    {
+        @Html.ValidationSummary(true);
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.InstructionId)
+        <div class="form-group" id="groupDescription" style="margin-top:10px">
+            @Html.LabelFor(m => m.Title, "Введите заголовок:")
+            <div id="groupDescription">
+                @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
             </div>
-            <div class="form-group" id="groupDescription">
-                @Html.LabelFor(m => m.Description, "Введите описание:", new { @class = "col-md-2 control-label" })
-                <div class="col-md-3" id="groupDescription">
-                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
-                </div>
 
+        </div>
+        <div class="form-group" id="groupDescription" style="margin-top:10px">
+            @Html.LabelFor(m => m.Description, "Введите описание:")
+            <div id="groupDescription">
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "12", cols = "30", style = "resize: none"})
             </div>
+
+        </div>
             <button type="submit" class="btn btn-default btn-mine">
                 <span class="fi-save">Сохранить</span>
             </button>
-        }
+    }
+</div>
         @Scripts.Render("~/scripts/jquery-1.10.2.js")
 
         @section scripts{
             <script>
                 var a = false;
                 function switchPhotoZone() {
-                    if (a){
-                        
-                        document.getElementById("insertPhoto").innerHTML = '<div class="showDropZone">'+
-        '<div class="jumbotron" style="float:left; width: 400px; height: 400px">'+
-            '<form action="~/Home/SaveUploadedFile?instructionId=@Model.InstructionId&stepId=@Model.Id" method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm" style="background: none; border: none; width: 400px; height: 400px">'+
-                        '<div class="fallback">'+
-                '<input name="file" type="file" multiple />'+
-                    '<input type="submit" id="sub" value="Upload"/>'+
-                        '</div>'+
-                        '</form>'+
-            '</div>'+
-        '</div>';
-                        a = false;
-                    } else {
                         document.getElementById("insertPhoto").innerHTML = '<div class="showPhoto">'+
                    '<div class="stepImage">' +
-                        '<img src="@Model.Image" style="width: 320px; height: 320px" />'+
-                        '<a class="btn btn-default">'+
-                        '<span class="glyphicon glyphicon-upload" onclick="switchPhotoZone()"> </span>'+
-                        '</a>'+
+                        '<img src="@Model.Image" style="width: 400px; height: 400px" />'+
+                        
                        '</div>'+
                    '</div>';
-                        a = true;
                     }
-                }
+                
 
                 $(function () {
 
                     //File Upload response from the server
                     Dropzone.options.dropzoneForm = {
                         maxFiles: 1,
+                        accept: function(file, done) {
+                            console.log("accept");
+                            done();
+                            switchPhotoZone();
+                        },
                         success: function (file, response) {
                         },
                         init: function () {
@@ -108,29 +103,7 @@
                                 var res = eval('(' + data.xhr.responseText + ')');
                             });
 
-                            //this.on("addedfile", function (file) {
-                               
-                            ////    // Create the remove button
-                            ////    var removeButton = Dropzone.createElement(" <button>Remove file</button>");
-
-                            ////    // Capture the Dropzone instance as closure.
-                            ////    var _this = this;
-
-                            ////    // Listen to the click event
-                            ////    removeButton.addEventListener("click", function (e) {
-                            ////        // Make sure the button click doesn't submit the form:
-                            ////        e.preventDefault();
-                            ////        e.stopPropagation();
-                            ////        // Remove the file preview.
-                            ////        _this.removeFile(file);
-                            ////        // If you want to the delete the file on the server as well,
-                            ////        // you can do the AJAX request here.
-                            ////    });
-
-                            ////    // Add the button to the file preview element.
-                            ////    file.previewElement.appendChild(removeButton);
-
-                            //});
+    
                         }
                     };
                 });

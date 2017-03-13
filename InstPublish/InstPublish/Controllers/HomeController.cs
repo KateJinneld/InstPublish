@@ -22,13 +22,21 @@ namespace InstPublish.Controllers
 
         public DateTime DataTime { get; private set; }
 
-        public ActionResult Index()
+        public ActionResult Feed()
         {
             List<Instruction> list = new List<Instruction>();
                 ViewBag.Count = list.Count;
             ViewBag.UserId = User.Identity.GetUserId();
                 return View(dataBase.Instructions);
             
+        }
+
+        public ActionResult InstructionStep(int instructionId, int numberOfStep)
+        {
+            InstructionAndStep instructionAndStep = new InstructionAndStep();
+            instructionAndStep.Instruction = dataBase.Instructions.FirstOrDefault(x => x.Id == instructionId);
+            instructionAndStep.Step = instructionAndStep.Instruction.Steps.FirstOrDefault(x => x.NumberOfStep == numberOfStep);
+            return View(instructionAndStep);
         }
 
         public ActionResult Step(int instructionId,int stepId)
@@ -67,12 +75,16 @@ namespace InstPublish.Controllers
                     DeleteInstruction(newInstruction.Id);
                 dataBase.Instructions.Add(newInstruction);
                 dataBase.SaveChanges();
+                ClearSteps();
             }
             else
             {
                 ModelState.AddModelError("", "Введены некорректные данные");
             }
-            return RedirectToAction("Index");
+            //if (isRerirect)
+            //    return RedirectToAction("Feed");
+            //else 
+            return RedirectToAction("CreateInstruction", new { instructionId = newInstruction.Id});
         }
 
         public ActionResult ChangeStep(Step changedStep)
@@ -124,6 +136,22 @@ namespace InstPublish.Controllers
         }
 
 
+        public void AddComment(Comment comment, int instructionId)
+        {
+            if (ModelState.IsValid)
+            {
+                Instruction instruction = dataBase.Instructions.FirstOrDefault(x => x.Id == instructionId);
+                comment.Author = User.Identity.Name;
+                comment.Instruction = instruction;
+                comment.InstructionId = instructionId;
+
+                dataBase.Comments.Add(comment);
+                dataBase.SaveChanges();
+
+            }
+            //return RedirectToAction("CreateInstruction", new { instructionId = changedStep.InstructionId });
+        }
+
         [HttpPost]
         public void DeleteInstruction(int instructionId)
         {
@@ -157,6 +185,16 @@ namespace InstPublish.Controllers
 
             return View();
         }
+
+        private void ClearSteps()
+        {
+            foreach (var step in dataBase.Steps.Where(e => e.Instruction == null))
+            {
+                dataBase.Steps.Remove(step);
+            }
+            dataBase.SaveChanges();
+        }
+
 
         public ActionResult SaveUploadedFile(int instructionId, int stepId)
         {
@@ -217,19 +255,5 @@ namespace InstPublish.Controllers
                 return Json(new { Message = "Error in saving file" });
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

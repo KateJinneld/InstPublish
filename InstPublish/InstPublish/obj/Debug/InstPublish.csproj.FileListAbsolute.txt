@@ -99,3 +99,4 @@ D:\Itransition\Project\InstPublish\InstPublish\obj\Debug\InstPublish.Migrations.
 D:\Itransition\Project\InstPublish\InstPublish\obj\Debug\InstPublish.csproj.GenerateResource.Cache
 D:\Itransition\Project\InstPublish\InstPublish\bin\CloudinaryDotNet.dll
 D:\Itransition\Project\InstPublish\InstPublish\obj\Debug\InstPublish.Migrations.ListAdded.resources
+D:\Itransition\Project\InstPublish\InstPublish\obj\Debug\InstPublish.Migrations.commentstext.resources

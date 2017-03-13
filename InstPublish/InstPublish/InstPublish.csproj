@@ -222,9 +222,14 @@
     <Compile Include="Migrations\201703072009505_List Added.Designer.cs">
       <DependentUpon>201703072009505_List Added.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703121503341_comments text.cs" />
+    <Compile Include="Migrations\201703121503341_comments text.Designer.cs">
+      <DependentUpon>201703121503341_comments text.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\InstructionAndStep.cs" />
     <Compile Include="Models\InstructionContext.cs" />
     <Compile Include="Models\InstructionDataBase.cs" />
     <Compile Include="Models\Opinion.cs" />
@@ -340,7 +345,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Feed.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -364,6 +369,7 @@
     <Content Include="Views\Home\CreateInstruction.cshtml" />
     <Content Include="Views\Home\StepsModule.cshtml" />
     <Content Include="Views\Home\Step.cshtml" />
+    <Content Include="Views\Home\InstructionStep.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -384,6 +390,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703072009505_List Added.resx">
       <DependentUpon>201703072009505_List Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703121503341_comments text.resx">
+      <DependentUpon>201703121503341_comments text.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

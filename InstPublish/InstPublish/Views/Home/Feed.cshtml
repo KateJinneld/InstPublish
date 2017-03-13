@@ -1,0 +1,185 @@
+﻿@using InstPublish.Models
+@using Microsoft.AspNet.Identity
+@model IEnumerable<Instruction>
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .pressedLike{
+        background-color: chartreuse; 
+    }
+
+     .pressedDislike{
+        background-color: orangered;
+    }
+
+    .head {
+        display: inline-block;
+    }
+
+    img {
+        margin-bottom: 15px;
+    }
+    label{
+        margin-left:10px;
+        margin-right:10px;
+        margin-bottom:15px;
+    }
+    .Steps {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow: hidden;
+        min-height: 260px;
+    }
+
+        .Steps li {
+            margin: 10px 3px 10px 3px;
+            padding: 1px;
+            float: left;
+            width: 220px;
+            height: 250px;
+            text-align: center;
+        }
+</style>
+<div id="InstructionsContainer">
+    <div class="page-header">
+        <h1>InstPublish <small>Инструкции на все случаи жизни</small></h1>
+    </div>
+    @{var SortedInstructions = Model.OrderByDescending(obj => obj.DateOfCreation).ToList();}
+    @foreach (Instruction instruction in SortedInstructions)
+    {
+        <div class="container" id="@instruction.Id+onDelete" style="border-bottom: 1px solid #eee; margin-top: 10px; margin-bottom:10px;">
+
+            <div class="hero-unit head">
+                <h2>
+                    @instruction.Title<small> - @instruction.Author</small>
+                </h2>
+            </div>
+            <div class="head" style="float:right">
+                @instruction.DateOfCreation.ToString()
+            @if (instruction.UserId == User.Identity.GetUserId())
+            {
+                using (Html.BeginForm("CreateInstruction", "Home", new { instructionId = instruction.Id }, FormMethod.Post, new { style = "display: inline-block;" }))
+                {
+                    <button type="submit" class="btn btn-default">
+                        <span class="glyphicon glyphicon-pencil"> </span>
+                        
+                    </button>
+                }            
+                    <button type="submit" onclick="deleteInstruction(@instruction.Id)" class="btn btn-default btn-mine">
+                        <span class="glyphicon glyphicon-remove"> </span>
+                    </button>
+            }
+        </div>
+
+
+
+        <div class="form-group" id="groupDescription">
+            <div style="width: 100%;">
+                <ul class="Steps">
+                    @{instruction.Steps = instruction.Steps.OrderBy(obj => obj.NumberOfStep).ToList();}
+                    @foreach (var step in instruction.Steps)
+                    {
+                        <li class="ui-state-default image-link"> <img src="@step.Image" onclick="openCurrentStep(@instruction.Id, @step.NumberOfStep)" style="width: 220px; height: 220px" />@step.NumberOfStep.  @step.Title</li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="display-field">
+            <a class="fi-like size-27 none" style="color: #000000"></a>
+            <a class="fi-dislike size-27 none" style="color: #000000"></a>
+
+
+
+            <a class="btn btn-default" onclick="openCurrentStep(@instruction.Id, 1)">
+                <span class="glyphicon glyphicon-eye-open"> </span>
+            </a>
+            <div style="float:right">
+                <a class="btn btn-default" onclick="openCurrentStep(@instruction.Id, 1)"> <span class="glyphicon glyphicon-comment"> </span></a>
+                @if (ViewBag.UserId != null)
+                {
+                    if (instruction.Opinions.FirstOrDefault(x => (x.OpinionsValue) && (x.UserId == ViewBag.UserId)) != null)
+                    { <a class="btn btn-default pressedLike" id="@instruction.Id+like" onclick="postOpinionLike(@instruction.Id)"> <span class="glyphicon glyphicon-thumbs-up"> </span></a>}
+                    else
+                    {
+                        <a class="btn btn-default" id="@instruction.Id+like">
+                            <span class="glyphicon glyphicon-thumbs-up" onclick="postOpinionLike(@instruction.Id)"> </span>
+                        </a>}
+                }
+                <label id="@instruction.Id" c>
+                    @(instruction.Opinions.Where(x => x.OpinionsValue).Count() - instruction.Opinions.Where(x => !x.OpinionsValue).Count())
+                </label>
+
+                @if (ViewBag.UserId != null)
+                {
+                    if (instruction.Opinions.FirstOrDefault(x => (!x.OpinionsValue) && (x.UserId == ViewBag.UserId)) != null)
+                    { <a class="btn btn-default pressedDislike" id="@instruction.Id+dis" onclick="postOpinionDislike(@instruction.Id)"> <span class="glyphicon glyphicon-thumbs-down"> </span></a>}
+                    else
+                    {
+                        <a class="btn btn-default" id="@instruction.Id+dis">
+                            <span class="glyphicon glyphicon-thumbs-down" onclick="postOpinionDislike(@instruction.Id)"> </span>
+                        </a>}
+
+                }
+
+            </div>
+        </div>
+    </div>
+                        }
+</div>
+
+@section scripts{
+    <script>
+        function postOpinionLike(index) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SetOpinion", "Home")',
+                data: { instructionId: index, opinionValue: true },
+                success: function (msg) {
+                    document.getElementById(index).innerHTML = msg;
+                    document.getElementById(index + "+like").style = "background-color: chartreuse";
+                    document.getElementById(index + "+dis").style = "background-color: white";
+                }
+            });
+        }
+        function postOpinionDislike(index) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SetOpinion", "Home")',
+                data: { instructionId: index, opinionValue: false },
+                success: function (msg) {
+                    document.getElementById(index).innerHTML = msg;
+                    document.getElementById(index + "+like").style = "background-color: white";
+                    document.getElementById(index + "+dis").style = "background-color: orangered";
+                }
+            });
+        }
+        function deleteInstruction(index) {
+            if (confirm('Are you sure you want to delete instruction?')) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteInstruction", "Home")',
+                    data: { instructionId: index },
+                    success: function () {
+                        document.getElementById(index + "+onDelete").remove();
+                    }
+                });
+            }
+        }
+        function openCurrentStep(id, number) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("InstructionStep", "Home")',
+                data: { instructionId: id, numberOfStep: number },
+                complete: function (result) {
+                    if (result.responseText) {
+                        $('body').html(result.responseText);
+                    }
+                }
+            });   
+        }
+    </script>
+}

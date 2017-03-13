@@ -31,6 +31,7 @@
 
 
     </style>
+
 @{string noImage = "http://www.amfmph.com/wp-content/plugins/social-media-builder//img/no-image.png";}
 <h2>Редактор инструкций</h2>
 <div class="instruction-Contaner">
@@ -79,6 +80,7 @@
                         @for (int i = 0; i < Model.Steps.Count; i++)
                         {                        
                                 <li class="ui-state-default image-link"> 
+                                    
                                 @Html.HiddenFor(model => model.Steps[i].Image, new { @class = "Image" })
                                 @Html.HiddenFor(model => model.Steps[i].Description, new { @class = "Description" })
                                 @Html.HiddenFor(model => model.Steps[i].InstructionId, new { @class = "InstructionId" })
@@ -109,6 +111,7 @@
             blinkBGColor_1: '#FFFF9C',
         blinkBGColor_2: '#CDE69C',
         });
+        
         function createStep() {
             stepsCount = $('.image-link').length;
             //var newStepHtml = '<li class="ui-state-default image-link"><img src="@noImage" style="width: 220px; height: 220px" /><span class="index"></span>.  Кликните, чтобы редактировать</li>';
@@ -167,7 +170,6 @@
             refreshStepsDisplay();
         }
     }
-
     function refreshStepsDisplay() {
         console.log("working refreshStepsDisplay()");
         $(".image-link").each(function (index, item) {
@@ -176,7 +178,8 @@
             $(item).find('.Description').attr('name', 'Steps[' + index + '].Description');
             $(item).find('.InstructionId').attr('name', 'Steps[' + index + '].InstructionId');
             $(item).find('.NumberOfStep').attr('name', 'Steps[' + index + '].NumberOfStep');
-            $(item).find('.NumberOfStep').attr('value', (index+1));
+            $(item).find('.NumberOfStep').attr('value', (index + 1));
+            $(item).find('.btn-mine').attr('onclick', 'deleteStep(' + (index + 1) + ')')
             $(item).find('.Image').attr('name', 'Steps[' + index + '].Image');
         });
     }

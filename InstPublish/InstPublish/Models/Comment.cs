@@ -12,6 +12,6 @@ namespace InstPublish.Models
         public string Author { get; set; }
         public int? InstructionId { get; set; }
         public virtual Instruction Instruction { get; set; }
-        public string Contetnt { get; set; }
+        public string Text { get; set; }
     }
 }

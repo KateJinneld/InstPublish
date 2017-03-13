@@ -163,7 +163,7 @@ namespace InstPublish.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Feed", "Home");
                 }
                 AddErrors(result);
             }
@@ -356,7 +356,7 @@ namespace InstPublish.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Manage");
+                return RedirectToAction("Feed", "Manage");
             }
 
             if (ModelState.IsValid)
@@ -392,7 +392,7 @@ namespace InstPublish.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Feed", "Home");
         }
 
         //
@@ -449,7 +449,7 @@ namespace InstPublish.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Feed", "Home");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

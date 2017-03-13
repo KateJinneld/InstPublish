@@ -1,0 +1,104 @@
+﻿@using InstPublish.Models
+@model InstructionAndStep
+@{
+    ViewBag.Title = "InstructionStep";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .stepImage {
+        margin-top: 10px;
+        padding: 0;
+        width: 100%;
+        overflow: hidden;
+        min-height: 260px;
+    }
+</style>
+
+<div class="page-header">
+    <h1>@Model.Instruction.Title <small>@Model.Instruction.Author (@Model.Instruction.Category)</small></h1>
+</div>
+@*<div class="page-header">
+        <h4>
+            @foreach (var tag in Model.Tags)
+            {
+                <small> @tag.Text; </small>
+            }
+            </h4>
+    </div>*@
+<div class="col-md-12">
+    <div class="col-md-1 control-label">
+        @if (Model.Step.NumberOfStep > 1)
+        {
+            <a class="btn btn-default pressedLike" onclick="openStep(@Model.Instruction.Id, (@Model.Step.NumberOfStep-1))" style="position:center; margin-top:190px">
+                <span class="glyphicon glyphicon-menu-left">
+                </span>
+            </a>
+        }
+    </div>
+    <div class="col-md-5 control-label">
+        <img src="@Model.Step.Image" style="width: 400px; height: 400px" />
+    </div>
+    <div class="col-md-5 control-label">
+        <h3>@Model.Step.NumberOfStep.  @Model.Step.Title</h3>
+        @Model.Step.Description
+    </div><div class="col-md-1 control-label">
+        @if (Model.Step.NumberOfStep < Model.Instruction.Steps.Count)
+        {
+            <a class="btn btn-default pressedLike" onclick="openStep(@Model.Instruction.Id, (@Model.Step.NumberOfStep+1))" style="position:center; margin-top:190px">
+                <span class="glyphicon glyphicon-menu-right">
+                </span>
+            </a>
+        }
+    </div>
+</div>
+
+@using (Ajax.BeginForm("AddComment", "Home",
+            new AjaxOptions
+            {
+                UpdateTargetId = "refresh"
+            }))
+{
+    @Html.ValidationSummary(true);
+        <input type="hidden" value="@Model.Instruction.Id" name="InstructionId" />
+    <div class="form-group" id="groupDescription" style="margin-top:40px">
+        @Html.LabelFor(m => m.Comment.Text, "Прокомментировать: ")
+        <div id="groupDescription">
+            @Html.TextAreaFor(m => m.Comment.Text, new { @class = "form-control", rows = "3", cols = "50", style = "resize: none" })
+        </div>
+
+    </div>
+        <button type="submit" class="btn btn-default btn-mine">
+            Отправить
+        </button>
+}
+<div id="refresh">
+    @foreach (Comment comment in Model.Instruction.Comments)
+    {
+        <div class="container" tyle="border-bottom: 1px solid #eee; margin-top: 10px; margin-bottom:10px;">
+
+            <div class="hero-unit head">
+                <h4>
+                    @comment.Author
+                </h4>
+            </div>
+            @comment.Text
+        </div>
+    }
+</div>
+            @section scripts{
+                <script>
+                    function openStep(id, number) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("InstructionStep", "Home")',
+                            data: { instructionId: id, numberOfStep: number },
+                            complete: function (result) {
+                                if (result.responseText) {
+                                    $('body').html(result.responseText);
+                                }
+                            }
+                        });
+                    }
+                    
+                </script>
+            }
